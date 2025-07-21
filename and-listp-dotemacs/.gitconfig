@@ -1,0 +1,23 @@
+[core]
+	attributesfile = ~/.gitattributes.global
+[alias]
+	root = rev-parse --show-toplevel
+	exec = "!exec "
+[pull]
+	ff = only
+	rebase = false
+[include]
+	path = .gitconfig.local
+[init]
+	defaultBranch = main
+[diff "lisp"]
+	xfuncname = ^(\\((def[^[:space:]]*|let)[[:space:]]+[^[:space:]]+)
+[diff "elisp"]
+	xfuncname = ^(\\((def[^[:space:]]+|use-package)[[:space:]]+[^[:space:]]+)
+[diff "fennel"]
+	xfuncname = ^(\\((fn[^[:space:]]*|lambda|macro|λ)[[:space:]]+[^[:space:]]+)
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

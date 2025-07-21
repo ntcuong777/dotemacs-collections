@@ -1,0 +1,73 @@
+#!/usr/bin/env sh
+# Package manager wrappers
+
+pm_dnf() {
+    cmd="$1"
+    shift
+    case "$cmd" in
+        (install)    sudo dnf install "$@" ;;
+        (update)     sudo dnf upgrade "$@" ;;
+        (remove)     sudo dnf remove "$@" ;;
+        (autoremove) sudo dnf autoremove "$@" ;;
+        (search)     dnf search "$@" ;;
+        (copr)       sudo dnf copr "$@" ;;
+        (list)       case $1 in
+                         (all)       dnf list all ;;
+                         (installed) dnf list installed ;;
+                         (*)         echo "wrong argument for 'list'" >&2
+                                     exit 1 ;;
+                     esac ;;
+        (*)          sudo dnf "$cmd" "$@" ;;
+    esac
+}
+
+pm_yum() {
+    cmd="$1"
+    shift
+    case "$cmd" in
+        (install) sudo yum install "$@" ;;
+        (update)  sudo yum update "$@" ;;
+        (remove)  sudo yum remove "$@" ;;
+        (search)  yum search "$@" ;;
+        (*)       sudo yum "$cmd" "$@" ;;
+    esac
+}
+
+pm_apt() {
+    cmd="$1"
+    shift
+    case "$cmd" in
+        (install)     sudo apt install "$@" ;;
+        (update)      sudo apt update "$@" ;;
+        (remove)      sudo apt remove "$@" ;;
+        (autoremove)  sudo apt autoremove "$@" ;;
+        (search)      apt search "$@" ;;
+        (list)        case $1 in
+                          (all)       apt list ;;
+                          (installed) apt list --installed ;;
+                          (*)         echo "wrong argument for 'list'" >&2
+                                      exit 1 ;;
+                      esac ;;
+        (*)           sudo apt "$cmd" "$@" ;;
+    esac
+}
+
+pm_pkg() {
+    cmd="$1"
+    shift
+    case "$cmd" in
+        (install)     pkg install "$@" ;;
+        (update)      pkg update "$@" ;;
+        (remove)      pkg remove "$@" ;;
+        (autoremove)  pkg autoremove "$@" ;;
+        (search)      pkg search "$@" ;;
+        (*)           pkg "$cmd" "$@" ;;
+    esac
+}
+
+for pm in dnf yum pkg apt; do
+    if [ -n "$(command -v $pm)" ]; then
+        eval "pm_${pm} $@"
+        break
+    fi
+done
